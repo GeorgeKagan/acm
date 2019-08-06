@@ -9,7 +9,7 @@ router.post('/:name', (req, res, next) => {
     // Wasn't sure you wanted this implemented in a more robust way or a simple if would suffice
     // More robust = a conditional rules set, e.g. something that Joi lib can provide, or similar
     if (!req.body.ipRange && !req.body.location) {
-        res.status(403).json({error: 'resource must have either ipRange or location'});
+        return res.status(403).json({error: 'resource must have either ipRange or location'});
     }
 
     // I put name in the URI since this is the REST way
