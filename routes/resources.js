@@ -1,8 +1,13 @@
 const express = require('express');
+const Resource = require('../models/resource');
 const router = express.Router();
 
 router.post('/', (req, res, next) => {
-  res.send('post');
+  const newResource = new Resource({
+    name: req.body.name
+  });
+
+  newResource.save().then(resource => res.json('added'));
 });
 
 router.get('/:name', (req, res, next) => {
