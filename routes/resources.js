@@ -7,6 +7,7 @@ const DB_ERR_DUPLICATE = 11000;
 
 const router = express.Router();
 
+// TODO: move route to a separate controller method
 router.post('/:name', (req, res, next) => {
     // Wasn't sure you wanted this implemented in a more robust way or a simple if would suffice
     // More robust = a conditional rules set, e.g. something that Joi lib can provide, or similar
@@ -33,6 +34,7 @@ router.post('/:name', (req, res, next) => {
     });
 });
 
+// TODO: move route to a separate controller method
 router.get('/:name', (req, res, next) => {
     const name = req.params.name;
     const ip = req.query.ip;
@@ -54,7 +56,7 @@ router.get('/:name', (req, res, next) => {
         const location = resource[0].location;
         const context = resource[0].context;
 
-        // As an improvement, these auth checks can be moved to a dedicated middleware that can guard sensitive APIs
+        // TODO: As an improvement, these auth checks can be moved to a dedicated middleware that can guard sensitive APIs
 
         // Resource created with an IP range restriction
         if (ipRange && ipRange.length && !ipRangeCheck(ip, ipRange)) {
