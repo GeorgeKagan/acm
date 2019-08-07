@@ -8,8 +8,10 @@
   "dependencies": {
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "geolite2": "^1.2.1",
     "http-errors": "~1.6.3",
     "ip-range-check": "^0.2.0",
+    "maxmind": "^3.1.2",
     "mongoose": "^5.6.8",
     "morgan": "~1.9.1"
   }

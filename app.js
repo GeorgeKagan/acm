@@ -22,7 +22,7 @@ app.use((err, req, res, next) => {
     res.locals.message = err.message;
     res.status(err.status || 500);
     console.log(err);
-    res.json("error");
+    res.json({error: err.message});
 });
 
 module.exports = app;

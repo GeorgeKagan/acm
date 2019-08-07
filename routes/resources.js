@@ -1,9 +1,11 @@
 const express = require('express');
 const Resource = require('../models/resource');
-const router = express.Router();
-const ipRangeCheck = require("ip-range-check");
+const ipLookup = require('../utils/ip-lookup');
+const ipRangeCheck = require('ip-range-check');
 
 const DB_ERR_DUPLICATE = 11000;
+
+const router = express.Router();
 
 router.post('/:name', (req, res, next) => {
     // Wasn't sure you wanted this implemented in a more robust way or a simple if would suffice
@@ -39,17 +41,39 @@ router.get('/:name', (req, res, next) => {
         return res.status(400).json({error: 'ip is required'});
     }
 
-    Resource.find({name}).select({'context': 1, 'ipRange': 1, '_id': 0}).exec((err, resource) => {
+    Resource.find({name}).select({'context': 1, 'ipRange': 1, 'location': 1, '_id': 0}).exec((err, resource) => {
         if (err) {
             return next(err);
         }
+
         if (!resource || !resource.length) {
             return res.status(404).json({error: 'resource not found'});
         }
-        if (!ipRangeCheck(ip, resource[0].ipRange)) {
+
+        const ipRange = resource[0].ipRange;
+        const location = resource[0].location;
+        const context = resource[0].context;
+
+        // As an improvement, these auth checks can be moved to a dedicated middleware that can guard sensitive APIs
+
+        // Resource created with an IP range restriction
+        if (ipRange && ipRange.length && !ipRangeCheck(ip, ipRange)) {
             return res.status(403).json({error: 'forbidden'});
         }
-        res.json({context: resource[0].context});
+
+        // Resource created with a location restriction
+        if (location) {
+            const city = ipLookup.get(ip);
+
+            if (!city || !city.location || !city.location.time_zone) {
+                return next(new Error(`Couldn't resolve IP ${ip}`));
+            }
+
+            if (city.location.time_zone.toLowerCase() !== location.toLowerCase()) {
+                return res.status(403).json({error: 'forbidden'});
+            }
+        }
+        res.json({context: context});
     });
 });
 
