@@ -12,7 +12,7 @@
     "http-errors": "~1.6.3",
     "ip-range-check": "^0.2.0",
     "maxmind": "^3.1.2",
-    "mongoose": "^5.6.8",
+    "mongoose": "^5.7.5",
     "morgan": "~1.9.1"
   }
 }
